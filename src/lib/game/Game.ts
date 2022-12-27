@@ -3,6 +3,7 @@ import type { Block } from './Block'
 
 import { Ticker, tickerDefOpts } from './Ticker'
 import { gridStore, themeStore } from './stores'
+import { Controls } from './Controls'
 import { Grid } from './Grid'
 
 interface GameOptions {
@@ -25,6 +26,7 @@ export class Game {
 	blocks: Block[] = []
 	grid: Grid
 	ticker: Ticker
+	controls: Controls
 	state: 'paused' | 'started' | 'stopped' = 'stopped'
 
 	score = 0
@@ -64,10 +66,13 @@ export class Game {
 
 		this.ticker = new Ticker(this, tickerDefOpts)
 		this.grid = new Grid(this)
+		this.controls = new Controls(this)
 		this.update()
 	}
 
 	start() {
+		this.controls.activate()
+
 		if (this.state === 'started') {
 			return
 		}

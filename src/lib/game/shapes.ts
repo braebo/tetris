@@ -1,7 +1,6 @@
 export type CellState = 0 | 1
 
 export type ShapeRotation = CellState[][]
-export type ActiveRotation = 0 | 1 | 2 | 3
 
 export type ShapeType = 'square' | 'line' | 'z' | 'triangle' | 'L'
 

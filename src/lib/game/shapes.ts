@@ -41,9 +41,8 @@ export const shapes: Shape[] = [
 		color: 'green',
 		cells: [
 			[
-				[1, 1, 1],
-				[1, 1, 1],
-				[1, 1, 1]
+				[1, 1],
+				[1, 1]
 			]
 		]
 	},

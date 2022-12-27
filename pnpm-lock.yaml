@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@nanostores/persistent': ^0.7.0
   '@playwright/test': ^1.29.0
   '@sveltejs/adapter-vercel': 1.0.0
   '@sveltejs/kit': 1.0.1
@@ -38,6 +39,7 @@ specifiers:
   vitest: ^0.25.8
 
 devDependencies:
+  '@nanostores/persistent': 0.7.0_nanostores@0.7.1
   '@playwright/test': 1.29.0
   '@sveltejs/adapter-vercel': 1.0.0_@sveltejs+kit@1.0.1
   '@sveltejs/kit': 1.0.1_svelte@3.55.0+vite@4.0.1
@@ -370,6 +372,15 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
+    dev: true
+
+  /@nanostores/persistent/0.7.0_nanostores@0.7.1:
+    resolution: {integrity: sha512-4PAInL/T1hbftZUJ0cmgdFHBMalUoq7BUXFBy7QfyMv/8X3LPTYNh/yxspL7+J+XM3UNvVI7IFRMMs6FBasjhQ==}
+    engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
+    peerDependencies:
+      nanostores: ^0.7.0
+    dependencies:
+      nanostores: 0.7.1
     dev: true
 
   /@nodelib/fs.scandir/2.1.5:

@@ -24,6 +24,7 @@
 		"test:unit": "vitest"
 	},
 	"devDependencies": {
+		"@nanostores/persistent": "^0.7.0",
 		"@playwright/test": "^1.29.0",
 		"@sveltejs/adapter-vercel": "1.0.0",
 		"@sveltejs/kit": "1.0.1",

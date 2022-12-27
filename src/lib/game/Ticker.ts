@@ -24,7 +24,7 @@ export class Ticker {
 	timer?: number
 
 	private get interval() {
-		return this.game.currentLevel.interval
+		return this.game.currentLevel.interval / this.game.speedMultiplier
 	}
 
 	constructor(public game: Game, options: TickerOptions) {
@@ -51,7 +51,6 @@ export class Ticker {
 	}
 
 	start() {
-		this.time = performance.now()
 		this.running = true
 		this.tick()
 	}

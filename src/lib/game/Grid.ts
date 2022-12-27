@@ -16,7 +16,7 @@ export class Grid {
 			.map((_, y) =>
 				Array(this.dimensions[0])
 					.fill(0)
-					.map((_, x) => new Cell(game, this.game.activeTheme.cell, [x, y], 0))
+					.map((_, x) => new Cell(game, [x, y], 0))
 			)
 	}
 

@@ -2,21 +2,29 @@ import type { Block } from './Block'
 import type { Game } from './Game'
 
 export class Cell {
-	block: null | Block = null
-	color: string
-	position: [x: number, y: number]
-	_state: 0 | 1 = 0
 	debug = false
+	_state: 0 | 1 = 0
 
-	constructor(public game: Game, color: string, position: [x: number, y: number], state?: 0 | 1) {
+	block: null | Block = null
+	color: null | string = null
+	position: [x: number, y: number]
+
+	constructor(public game: Game, position: [x: number, y: number], state?: 0 | 1) {
 		this.state = state ?? 0
-		this.color = color
 		this.position = position
+	}
+
+	get x() {
+		return this.position[0]
+	}
+
+	get y() {
+		return this.position[1]
 	}
 
 	set state(state: 0 | 1) {
 		this._state = state
-		this.color = state === 0 ? this.game.activeTheme.cell : this.block?.color || '#000000'
+		this.color = state === 1 ? this.block?.color ?? null : null
 	}
 
 	get state() {
@@ -52,14 +60,6 @@ export class Cell {
 
 	isOccupied() {
 		return this.state === 1
-	}
-
-	get x() {
-		return this.position[0]
-	}
-
-	get y() {
-		return this.position[1]
 	}
 
 	canFall() {

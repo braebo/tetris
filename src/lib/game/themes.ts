@@ -1,29 +1,26 @@
 export interface Theme {
-	cell: string
+	name: string
 	grid: string
-	block: string
+	outline: string
+	primary: string
+	secondary: string
 }
-export type ThemeTitle = string
-export type Themes = Map<ThemeTitle, Theme>
 
 export const defaultTheme: Theme = {
-	cell: '#1d1d1d',
-	grid: '#000000',
-	block: '#1d1d1d'
+	name: 'default',
+	grid: '#1d1d1d',
+	outline: '#151515',
+	primary: 'cyan',
+	secondary: 'magenta'
 }
 
-export const themes: Themes = new Map<ThemeTitle, Theme>(
-	Object.entries({
-		default: defaultTheme,
-		light: {
-			cell: '#ffffff',
-			grid: '#cccccc',
-			block: '#333333'
-		},
-		dark: {
-			cell: '#333333',
-			grid: '#cccccc',
-			block: '#eeeeee'
-		}
-	})
-)
+export const themes: Theme[] = [
+	defaultTheme,
+	{
+		name: 'retro',
+		grid: 'hsl(240, 50%, 10%)',
+		outline: 'hsl(328, 100%, 20%)',
+		primary: 'indigo',
+		secondary: 'deeppink'
+	}
+]

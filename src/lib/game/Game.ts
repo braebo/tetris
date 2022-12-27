@@ -1,19 +1,19 @@
+import type { Theme } from './themes'
 import type { Block } from './Block'
 
-import { themes, defaultTheme, type ThemeTitle } from './themes'
 import { Ticker, tickerDefOpts } from './Ticker'
-import { grid } from './stores'
+import { gridStore, themeStore } from './stores'
 import { Grid } from './Grid'
 
 interface GameOptions {
 	debug: boolean
-	theme: ThemeTitle
+	theme: Theme
 }
 
 /** Default game options. */
 const defaultGameOpts: GameOptions = {
 	debug: false,
-	theme: 'default'
+	theme: themeStore.get()
 }
 
 interface Level {
@@ -25,6 +25,7 @@ export class Game {
 	blocks: Block[] = []
 	grid: Grid
 	ticker: Ticker
+	state: 'paused' | 'started' | 'stopped' = 'stopped'
 
 	score = 0
 	gameOver = false
@@ -43,12 +44,18 @@ export class Game {
 		return this.levels[this.level]
 	}
 
-	theme: ThemeTitle
-	debug: boolean
+	speedMultiplier = 1
 
-	get activeTheme() {
-		return themes.get(this.theme) ?? defaultTheme
+	_theme!: Theme
+	set theme(theme: Theme) {
+		this._theme = theme
+		themeStore.set(theme)
 	}
+	get theme() {
+		return this._theme
+	}
+
+	debug: boolean
 
 	constructor(options?: GameOptions) {
 		const opts = { ...defaultGameOpts, ...options }
@@ -61,11 +68,18 @@ export class Game {
 	}
 
 	start() {
+		if (this.state === 'started') return
+
+		if (this.state === 'stopped') {
+			this.grid.addBlock()
+		}
+
 		this.ticker.start()
 	}
 
 	pause() {
 		this.ticker.stop()
+		this.state = 'paused'
 	}
 
 	reset() {
@@ -84,13 +98,14 @@ export class Game {
 	 * Usually, the game will tick automatically after {@link Game.start} is invoked.
 	 */
 	tick() {
+		// The grid tick handles gravity and block movement.
 		this.grid.tick()
 		this.update()
 	}
 
-	/** Updates any stores that are subscribed to the game. */
+	/** Updates any stores that are subscribed to the game (mostly for the UI). */
 	update() {
-		grid.set(this.grid.cells)
+		gridStore.set(this.grid.cells)
 	}
 
 	/** Cleans up any loose resources used by the game. */

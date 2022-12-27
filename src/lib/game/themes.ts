@@ -7,9 +7,9 @@ export type ThemeTitle = string
 export type Themes = Map<ThemeTitle, Theme>
 
 export const defaultTheme: Theme = {
-	cell: '#aeaeae',
-	grid: '#cccccc',
-	block: '#333333'
+	cell: '#1d1d1d',
+	grid: '#000000',
+	block: '#1d1d1d'
 }
 
 export const themes: Themes = new Map<ThemeTitle, Theme>(

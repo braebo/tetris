@@ -2,43 +2,52 @@ import type { Game } from './Game'
 
 export interface TickerOptions {
 	time: number
-	speed: number
 	frame: number
 	ticks: number
+	lastTickTime: number
 }
 
 export const tickerDefOpts: TickerOptions = {
 	time: 0,
-	speed: 1000,
 	frame: 0,
-	ticks: 0
+	ticks: 0,
+	lastTickTime: 0
 }
 
 export class Ticker {
 	frame!: number
 	time!: number
-	speed!: number
 	ticks!: number
+	lastTickTime!: number
 
 	running = false
-	timer?: NodeJS.Timeout
+	timer?: number
+
+	private get interval() {
+		return this.game.currentLevel.interval
+	}
 
 	constructor(public game: Game, options: TickerOptions) {
 		Object.assign(this, { ...options, ...tickerDefOpts })
 	}
+
 	protected tick() {
-		this.time = performance.now()
-		if (this.time - this.speed * this.frame > this.speed) {
+		if (this.game.gameOver) return this.stop()
+		this.time = Date.now()
+
+		if (this.time - this.lastTickTime > this.interval) {
+			this.lastTickTime = this.time
+			this.frame++
+			this.game.grid.tick()
+
 			if (this.game.debug) {
 				console.log('Ticker.tick ' + this.time + '.', this)
 			}
-			this.frame++
-			this.game.grid.tick()
 		}
 
-		this.timer = setTimeout(() => {
+		this.timer = requestAnimationFrame(() => {
 			if (this.running) this.tick()
-		}, 1000 / 32)
+		})
 	}
 
 	start() {

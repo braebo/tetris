@@ -1,24 +1,26 @@
 <script lang="ts">
-	import { tetris, grid } from '$lib/game/Game'
-	import { onDestroy } from 'svelte'
-	
-	// import { dev } from '$app/environment'
-	// tetris.debug = dev
+	import { Game, grid } from '$lib/game'
+	import { onMount } from 'svelte'
 
-	onDestroy(() => {
-		tetris.dispose()
+	const tetris = new Game()
+
+	onMount(() => {
+		tetris.start
+
+		return () => tetris.dispose
 	})
 </script>
 
-<div class="buttons">
-	<button on:click={() => tetris.tick()}>tick</button>
-	<button on:click={() => tetris.start()}>start</button>
-	<button on:click={() => tetris.pause()}>pause</button>
-	<input type="checkbox" bind:checked={tetris.debug} />
-</div>
-
-
 <div class="tetris">
+	<div class="buttons">
+		<button on:click={() => tetris.tick()}>tick</button>
+		<button on:click={() => tetris.start()}>start</button>
+		<button on:click={() => tetris.pause()}>pause</button>
+		<button on:click={() => tetris.reset()}>reset</button>
+		<button on:click={() => tetris.grid.addBlock()}>add block</button>
+		<div class="button">debug <input type="checkbox" bind:checked={tetris.debug} /></div>
+	</div>
+
 	{#each $grid as row, i}
 		<div class="row">
 			{#each row as cell, j}
@@ -34,6 +36,7 @@
 
 <style lang="scss">
 	.tetris {
+		position: relative;
 		margin: auto;
 		border-radius: 1rem;
 	}
@@ -65,9 +68,15 @@
 		justify-content: center;
 		align-items: center;
 		gap: 1rem;
+
+		position: absolute;
+		left: -10rem;
+		top: 5rem;
 	}
 
-	button {
+	button, .button {
+		background: var(--bg-b);
+		color: var(--fg-a);
 		width: fit-content;
 		margin: 0 auto;
 		padding: 0.25rem 1rem;

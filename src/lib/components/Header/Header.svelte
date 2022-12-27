@@ -5,8 +5,7 @@
 	import { Nav } from './Nav'
 
 	setContext('links', [
-		['/', 'Home'],
-		['/about', 'About']
+		['/', 'Tetris'],
 	])
 </script>
 
@@ -14,9 +13,7 @@
 
 	header
 
-		#home.corner
-			a(href='/')
-				HomeIcon
+		.corner
 
 		Nav
 

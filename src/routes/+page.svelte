@@ -7,7 +7,7 @@
 
 	onMount(() => {
 		tetris.start()
-		tetris.speedMultiplier = 4 // temp
+		tetris.speedMultiplier = 20 // temp
 		
 		return () => {
 			tetris.reset()
@@ -26,6 +26,7 @@
 		<button on:click={() => tetris.pause()}>pause</button>
 		<button on:click={() => tetris.reset()}>reset</button>
 		<button on:click={() => tetris.grid.addBlock()}>add block</button>
+
 		<div class="button">
 			debug <input type="checkbox" bind:checked={tetris.debug} />
 		</div>
@@ -43,7 +44,7 @@
 			<div class="title"> speed </div>
 			<div class="number-input-sm">
 				<div class="prefix">x</div>
-				<input type="number" step="1" min="1" max="10" bind:value={tetris.speedMultiplier} />
+				<input type="number" step="1" min="1" max="100" bind:value={tetris.speedMultiplier} />
 			</div>
 		</div>
 	</div>

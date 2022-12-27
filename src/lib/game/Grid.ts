@@ -24,27 +24,33 @@ export class Grid {
 		return Math.floor(this.dimensions[0] / 2)
 	}
 
-	addBlock(block: Block = new Block([0, 0])) {
+	addBlock(block: Block = new Block(this, [0, 0])) {
+		if (this.game.gameOver) return
+
 		if (this.debug) {
 			console.log('Grid.addBlock', block)
 		}
+
 		block.position = [this.center - Math.floor(block.width / 2), 0]
+
 		block.cells.forEach((row, y) => {
 			row.forEach((cell, x) => {
-				if (this.cells[x][y].isEmpty()) {
-					const targetCell = this.getCell(block, x, y)
-					if (cell === 1) {
-						targetCell.link(block, x, y)
-					}
-				} else {
-					console.error('Game Over')
-					this.game.gameOver = true
-					return
+				const targetCell = this.getCell(block, x, y)
+				if (cell === 1) {
+					targetCell.link(block, x, y)
 				}
 			})
 		})
+
 		this.blocks.push(block)
+
 		this.game.update()
+
+		if (block.willCollide()) {
+			this.game.gameOver = true
+			alert('Game Over')
+			return
+		}
 	}
 
 	/** Returns the grid cell occupied by a given Block cell. */
@@ -61,17 +67,8 @@ export class Grid {
 		// Move all falling blocks down 1 cell.
 		this.blocks.forEach((block) => {
 			if (block.falling) {
-				// Check if the block would collide with another block or the bottom of the grid.
-				const bottomCellsIndex = block.cells.length - 1
-				const bottomCells = block.cells[bottomCellsIndex]
-				if (this.debug) {
-					console.log('bottomCellsIndex', bottomCellsIndex)
-					console.log('bottomCells', bottomCells)
-				}
-				const canFall = bottomCells.every((_cell, x) => this.getCell(block, x, bottomCellsIndex).canFall())
-
 				// If the block can't fall, toggle it and return early.
-				if (!canFall) {
+				if (block.willCollide()) {
 					if (this.debug) console.warn('collision detected')
 					block.falling = false
 					this.addBlock()

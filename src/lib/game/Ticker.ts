@@ -32,7 +32,11 @@ export class Ticker {
 	}
 
 	protected tick() {
-		if (this.game.gameOver) return this.stop()
+		if (this.game.gameOver) {
+			this.stop()
+			return
+		}
+
 		this.time = Date.now()
 
 		if (this.time - this.lastTickTime > this.interval) {

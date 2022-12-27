@@ -68,12 +68,15 @@ export class Game {
 	}
 
 	start() {
-		if (this.state === 'started') return
+		if (this.state === 'started') {
+			return
+		}
 
 		if (this.state === 'stopped') {
 			this.grid.addBlock()
 		}
 
+		this.state = 'started'
 		this.ticker.start()
 	}
 
@@ -83,9 +86,14 @@ export class Game {
 	}
 
 	reset() {
-		this.grid = new Grid(this)
 		this.ticker.stop()
 		this.ticker.time = 0
+		this.grid = new Grid(this)
+		this.score = 0
+		this.level = 0
+		this.gameOver = false
+		this.state = 'stopped'
+		this.update()
 	}
 
 	restart() {

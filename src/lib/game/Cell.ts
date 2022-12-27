@@ -38,6 +38,7 @@ export class Cell {
 	link(block: Block, x: number, y: number) {
 		this.block = block
 		const newState = block.cells[y][x]
+		// Make sure we don't overwrite a cell that's already occupied.
 		if (this.state === 1 && newState === 1) {
 			if (this.debug) console.error('cell', this.position, 'linked to block', block, 'but was already occupied')
 		}
@@ -62,20 +63,20 @@ export class Cell {
 		return this.state === 1
 	}
 
-	canFall() {
+	cellBelow(): 'empty' | 'occupied' | 'floor' {
 		const touchingFloor = this.y + 1 < this.game.grid.dimensions[1]
 		if (!touchingFloor) {
 			if (this.debug) console.log('cell', this.position, 'Collision detected: grid floor')
-			return false
+			return 'floor'
 		}
 
 		const cellBelow = this.game.grid.cells[this.y + 1][this.x]
 		if (cellBelow.isOccupied()) {
 			if (this.debug) console.log('cell', this.position, 'Collision detected: cell below')
-			return false
+			return 'occupied'
 		}
 
-		return true
+		return 'empty'
 	}
 
 	reset() {

@@ -2,12 +2,13 @@ import type { Block } from './Block'
 import type { Game } from './Game'
 
 export class Cell {
-	debug = false
 	_state: 0 | 1 = 0
 
 	block: null | Block = null
 	color: null | string = null
 	position: [x: number, y: number]
+
+	debug = true
 
 	constructor(public game: Game, position: [x: number, y: number], state?: 0 | 1) {
 		this.state = state ?? 0
@@ -43,8 +44,6 @@ export class Cell {
 			if (this.debug) console.error('cell', this.position, 'linked to block', block, 'but was already occupied')
 		}
 		this.state = newState
-
-		if (this.debug) console.log('cell', this.position, 'linked to block', block)
 	}
 
 	unlink() {
@@ -63,6 +62,7 @@ export class Cell {
 		return this.state === 1
 	}
 
+	// todo - move these to block or grid?
 	cellBelow(): 'empty' | 'occupied' | 'floor' {
 		const touchingFloor = this.y + 1 < this.game.grid.dimensions[1]
 		if (!touchingFloor) {
@@ -76,6 +76,27 @@ export class Cell {
 			return 'occupied'
 		}
 
+		return 'empty'
+	}
+
+	cellBeside(side: 'right' | 'left'): 'empty' | 'occupied' | 'wall' {
+		const targetCellX = side === 'left' ? this.x - 1 : this.x + 1
+		const cellToSide = this.game.grid.cells[this.y][targetCellX]
+
+		if (typeof cellToSide === 'undefined') {
+			if (this.debug) console.log(`Collision detected: wall to ${side} of ${this.position}.`)
+			return 'wall'
+		}
+
+		if (cellToSide.isOccupied()) {
+			if (this.debug)
+				console.log(
+					`Collision detected: cell to ${side} of ${this.position} at ${cellToSide.position} is occupied.`
+				)
+			return 'occupied'
+		}
+
+		if (this.debug) console.log(`No collision detected: cell to ${side} of ${this.position} is empty.`)
 		return 'empty'
 	}
 

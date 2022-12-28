@@ -24,6 +24,10 @@ export class Controls {
 		this.game.grid.moveBlock('left')
 	}
 
+	moveBlockDown() {
+		this.game.grid.moveBlock('down')
+	}
+
 	dropBlock() {
 		this.game.grid.dropBlock()
 	}
@@ -43,10 +47,13 @@ export class Controls {
 				this.moveBlockRight()
 				break
 			case 'ArrowDown':
-				this.dropBlock()
+				this.moveBlockDown()
 				break
 			case 'ArrowUp':
 				this.rotateBlock()
+				break
+			case ' ':
+				this.dropBlock()
 				break
 		}
 	}

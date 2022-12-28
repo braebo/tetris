@@ -46,7 +46,7 @@ export class Grid {
 
 		this.game.update()
 
-		if (block.willCollide()) {
+		if (!block.canMove('down')) {
 			this.game.gameOver = true
 			alert('Game Over')
 			return
@@ -55,33 +55,24 @@ export class Grid {
 
 	/** Returns the grid cell occupied by a given Block cell. */
 	getCell(block: Block, x: number, y: number) {
-		if (this.debug) {
-			console.log('Grid.getCell() - block.position = ', block.position)
-			console.log({ blockX: block.x, blockY: block.y, x, y })
-		}
-		return this.cells[y + block.y][x + block.x]
+		return this.cells[y + block.y]?.[x + block.x]
 	}
 
-	moveBlock(direction: 'left' | 'right' | 'up' | 'down') {
+	moveBlock(direction: 'left' | 'right' | 'down') {
 		if (this.activeBlock) {
-			const { x, y } = this.activeBlock
-
-			if (direction.match(/left|right/)) {
-				const nextX = direction === 'left' ? x - 1 : x + 1
-				const nextY = y
-				if (this.canMoveTo(nextX, nextY)) {
-					this.activeBlock.position = [nextX, nextY]
-					this.game.update()
+			if (this.activeBlock.canMove(direction)) {
+				this.activeBlock.unlink()
+				if (direction === 'left') {
+					this.activeBlock.x -= 1
+				} else if (direction === 'right') {
+					this.activeBlock.x += 1
+				} else if (direction === 'down') {
+					this.activeBlock.y += 1
 				}
-			}
-
-			if (direction.match(/up|down/)) {
-				const nextX = direction === 'left' ? x - 1 : x + 1
-				const nextY = y
-				if (this.canMoveTo(nextX, nextY)) {
-					this.activeBlock.position = [nextX, nextY]
-					this.game.update()
-				}
+				this.activeBlock.link()
+				this.game.update()
+			} else {
+				if (this.debug) console.log("Move denied.  Can't move " + direction)
 			}
 		}
 	}
@@ -105,23 +96,34 @@ export class Grid {
 	}
 
 	rotateBlock() {
-		if (this.activeBlock) {
-			this.activeBlock.rotation = (this.activeBlock.rotation + 1) % this.activeBlock.cells.length
-			this.game.update()
-		}
+		this.activeBlock?.rotate()
+		this.game.update()
 	}
 
 	/** Moves the block downwards to the point where it would collide and stop falling. */
 	dropBlock() {
 		if (!this.activeBlock) return
 
+		const loopGuard = 21
 		let y = this.activeBlock.y
-		while (!this.activeBlock?.willCollide()) {
+		while (this.activeBlock?.canMove('down')) {
 			y++
+			if (y > loopGuard) {
+				console.error('loopGuard triggered')
+				break
+			}
 		}
 		y--
 		this.activeBlock.y = y
 		this.game.update()
+	}
+
+	/** Freezes the active block in place and adds a new block. */
+	freeze() {
+		if (this.activeBlock) {
+			this.activeBlock.falling = false
+			this.addBlock()
+		}
 	}
 
 	tick() {
@@ -130,13 +132,8 @@ export class Grid {
 		const block = this.activeBlock
 
 		if (block?.falling) {
-			// If the block can't fall, toggle it and return early.
-			if (block.willCollide()) {
-				if (this.debug) console.warn('collision detected')
-				block.falling = false
-				this.addBlock()
-				return
-			}
+			// If the block can't fall, freeze it and return early.
+			if (!block.canMove('down')) return this.freeze()
 
 			// Unlink all cells in the current block.
 			block.cells.forEach((row, y) => {
@@ -152,6 +149,7 @@ export class Grid {
 			block.position[1]++
 
 			// Link all cells in the current block to the next cell down.
+			if (this.debug) console.groupCollapsed('Grid.tick() - Link cells.')
 			block.cells.forEach((row, y) => {
 				row.forEach((cell, x) => {
 					const targetCell = this.getCell(block, x, y)
@@ -161,11 +159,12 @@ export class Grid {
 					if (this.debug) console.log('targetCell', targetCell.position)
 				})
 			})
+			if (this.debug) console.groupEnd()
 		}
 
-		if (this.debug) {
-			console.table(this.cells.map((row) => row.map((cell) => cell._state)))
-		}
+		// if (this.debug) {
+		// 	console.table(this.cells.map((row) => row.map((cell) => cell._state)))
+		// }
 		this.game.update()
 	}
 }

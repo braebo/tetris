@@ -7,7 +7,7 @@
 
 	onMount(() => {
 		tetris.start()
-		tetris.speedMultiplier = 20 // temp
+		tetris.speedMultiplier = 2 // temp
 		
 		return () => {
 			tetris.reset()

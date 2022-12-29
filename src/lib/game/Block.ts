@@ -1,9 +1,11 @@
 import type { Shape, ShapeRotation } from './shapes'
 import type { Grid } from './Grid'
+import { nanoid } from 'nanoid'
 
 import { randomShape } from './shapes'
 
 export class Block {
+	id = nanoid()
 	color: string
 	falling = true
 
@@ -46,8 +48,54 @@ export class Block {
 	}
 
 	rotate() {
-		const newRotation = this._rotation + 1
-		this.rotation = newRotation
+		let value = this._rotation + 1
+		if (value < 0) {
+			value = this.shape.cells.length - 1
+		}
+		if (value >= this.shape.cells.length) {
+			value = 0
+		}
+		// this.rotation = value
+
+		let validRotation = true
+
+		// Check if the rotation will hit any non-empty cells.
+		const testCells = this.shape.cells[value]
+
+		for (let y = 0; y < this.height; y++) {
+			if (!validRotation) break
+
+			for (let x = 0; x < this.width; x++) {
+				if (testCells[y][x] === 0) continue
+
+				const testTargetCell = this.grid.getCell(this, x, y)
+				const occupiedBySelf = this === testTargetCell.block
+
+				if (testTargetCell.isOccupied() && !occupiedBySelf) {
+					if (testTargetCell.isOccupied()) {
+						const { x, y } = testTargetCell
+						console.log(`testTargetCell at [${x},${y}] is occupied: `, testTargetCell)
+					}
+					if (occupiedBySelf) {
+						console.log('testTargetCell is occupied by self', testTargetCell)
+					}
+					console.error('Invalid rotation.  Breaking')
+					validRotation = false
+					break
+				}
+
+				if (!validRotation) return
+			}
+		}
+
+		if (!validRotation) return
+
+		this.unlink()
+
+		this._rotation = value
+		this.cells = this.shape.cells[this.rotation]
+
+		this.link()
 	}
 
 	get rotation() {
@@ -55,23 +103,6 @@ export class Block {
 	}
 
 	set rotation(value) {
-		// Check if the rotation will hit any non-empty cells.
-		this.cells.forEach((row, y) => {
-			row.forEach((cell, x) => {
-				if (cell === 1) {
-					const targetCell = this.grid.getCell(this, x, y)
-
-					// If the targetCell is occupied by this block, it doesn't count.
-					const isSelf = targetCell?.block === this
-					if (!isSelf && targetCell.isOccupied()) {
-						return
-					}
-				}
-			})
-		})
-
-		this.unlink()
-
 		if (value < 0) {
 			value = this.shape.cells.length - 1
 		}
@@ -80,9 +111,6 @@ export class Block {
 		}
 
 		this._rotation = value
-		this.cells = this.shape.cells[this.rotation]
-
-		this.link()
 	}
 
 	link() {

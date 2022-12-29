@@ -36,8 +36,20 @@ export class Controls {
 		this.game.grid.rotateBlock()
 	}
 
+	repeatThrottle = 0
+	maxRepeatSpeedMS = 75
+
 	keydown(e: KeyboardEvent) {
 		if (this.game.gameOver) return
+		if (e.repeat) {
+			if (this.repeatThrottle === 0) this.repeatThrottle = performance.now()
+			const sinceLast = performance.now() - this.repeatThrottle
+			if (sinceLast >= this.maxRepeatSpeedMS) {
+				this.repeatThrottle = performance.now()
+			} else {
+				return
+			}
+		}
 
 		switch (e.key) {
 			case 'ArrowLeft':

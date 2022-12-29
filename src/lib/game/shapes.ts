@@ -13,7 +13,7 @@ export interface Shape {
 export const shapes: Shape[] = [
 	{
 		type: 'triangle',
-		color: 'purple',
+		color: '#ad19b6',
 		cells: [
 			[
 				[0, 0, 0],
@@ -39,7 +39,7 @@ export const shapes: Shape[] = [
 	},
 	{
 		type: 'square',
-		color: 'yellow',
+		color: '#ffff28',
 		cells: [
 			[
 				[1, 1],
@@ -49,7 +49,7 @@ export const shapes: Shape[] = [
 	},
 	{
 		type: 'line',
-		color: 'blue',
+		color: '#1a62ff',
 		cells: [
 			[
 				[0, 0, 0, 0],
@@ -79,7 +79,7 @@ export const shapes: Shape[] = [
 	},
 	{
 		type: 'z',
-		color: 'red',
+		color: '#ff2d2d',
 		cells: [
 			[
 				[1, 1, 0],
@@ -105,7 +105,7 @@ export const shapes: Shape[] = [
 	},
 	{
 		type: 'zReverse',
-		color: 'green',
+		color: '#19c319',
 		cells: [
 			[
 				[0, 1, 1],
@@ -131,7 +131,7 @@ export const shapes: Shape[] = [
 	},
 	{
 		type: 'L',
-		color: 'blue',
+		color: '#4f05ff',
 		cells: [
 			[
 				[1, 0, 0],
@@ -157,7 +157,7 @@ export const shapes: Shape[] = [
 	},
 	{
 		type: 'LReverse',
-		color: 'orange',
+		color: '#ffb62f',
 		cells: [
 			[
 				[0, 0, 1],

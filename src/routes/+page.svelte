@@ -52,7 +52,7 @@
 	{#each $gridStore as row, i}
 		<div class="row">
 			{#each row as cell, j}
-				<div class="cell" style="background-color: {cell.color ?? $themeStore.grid}">
+				<div class="cell" class:glow={cell.color} style:--cell={cell.color + '50' ?? $themeStore.grid} style="background-color: {cell.color ?? $themeStore.grid}">
 					{#if tetris.debug}
 						<div class="position">x{i}y{j}</div>
 					{/if}
@@ -86,8 +86,13 @@
 		height: 2rem;
 		
 		background: var(--grid);
-		border-radius: 0.1rem;
+		border-radius: 0.2rem;
 		outline: 1px solid var(--outline);
+		overflow: visible;
+
+		&.glow {
+			box-shadow: 0px 0px 15px 5px var(--cell);
+		}
 	}
 
 	.position {

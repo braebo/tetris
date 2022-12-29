@@ -8,7 +8,7 @@
 	onMount(() => {
 		tetris.start()
 		tetris.speedMultiplier = 2 // temp
-		
+
 		return () => {
 			tetris.reset()
 			tetris.dispose()
@@ -16,10 +16,7 @@
 	})
 </script>
 
-<div class="tetris"
-	style:--grid={$themeStore.grid}
-	style:--outline={$themeStore.outline}
->
+<div class="tetris" style:--grid={$themeStore.grid} style:--outline={$themeStore.outline}>
 	<div class="buttons">
 		<button on:click={() => tetris.tick()}>tick</button>
 		<button on:click={() => tetris.start()}>start</button>
@@ -32,16 +29,16 @@
 		</div>
 
 		<div class="setting">
-			<div class="title"> theme </div>
+			<div class="title">theme</div>
 			<select bind:value={tetris.theme}>
 				{#each themes as theme}
 					<option value={theme}>{theme.name}</option>
 				{/each}
 			</select>
 		</div>
-		
+
 		<div class="setting">
-			<div class="title"> speed </div>
+			<div class="title">speed</div>
 			<div class="number-input-sm">
 				<div class="prefix">x</div>
 				<input type="number" step="1" min="1" max="100" bind:value={tetris.speedMultiplier} />
@@ -52,7 +49,12 @@
 	{#each $gridStore as row, i}
 		<div class="row">
 			{#each row as cell, j}
-				<div class="cell" class:glow={cell.color} style:--cell={cell.color + '50' ?? $themeStore.grid} style="background-color: {cell.color ?? $themeStore.grid}">
+				<div
+					class="cell"
+					class:glow={cell.color}
+					style:--cell={cell.color + '50' ?? $themeStore.grid}
+					style="background-color: {cell.color ?? $themeStore.grid}"
+				>
 					{#if tetris.debug}
 						<div class="position">x{i}y{j}</div>
 					{/if}
@@ -65,9 +67,9 @@
 <style lang="scss">
 	.tetris {
 		position: relative;
-		
+
 		margin: auto;
-		
+
 		border-radius: 1rem;
 	}
 
@@ -84,7 +86,7 @@
 
 		width: 2rem;
 		height: 2rem;
-		
+
 		background: var(--grid);
 		border-radius: 0.2rem;
 		outline: 1px solid var(--outline);
@@ -116,12 +118,12 @@
 		width: fit-content;
 		margin: 0 auto;
 		padding: 0.25rem 1rem;
-		
+
 		color: var(--fg-d);
 		background: var(--bg-b);
 		border-radius: var(--radius);
 		border: none;
-		
+
 		font-family: var(--font-a);
 		letter-spacing: 0.1rem;
 
@@ -141,11 +143,10 @@
 
 		outline: 1px solid var(--bg-c);
 
-
 		.title {
 			text-transform: capitalize;
 			font-family: var(--font-b);
-			color: var(--fg-d)
+			color: var(--fg-d);
 		}
 	}
 
@@ -153,13 +154,13 @@
 		width: fit-content;
 		margin: 0 auto;
 		padding: 0.25rem 1rem;
-		
+
 		color: var(--fg-a);
 		background: var(--bg-b);
 		border-radius: var(--radius);
 		border: none;
 		outline: none;
-		
+
 		font-family: var(--font-a);
 		letter-spacing: 0.1rem;
 
@@ -179,14 +180,14 @@
 			width: fit-content;
 			margin: 0 auto;
 			padding: 0.25rem;
-			
+
 			background: var(--bg-b);
 			color: var(--fg-a);
 			border-radius: var(--radius);
 			border: none;
-			
+
 			letter-spacing: 0.1rem;
-			
+
 			font-family: var(--font-a);
 		}
 	}

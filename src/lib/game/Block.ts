@@ -47,7 +47,6 @@ export class Block {
 
 	rotate() {
 		const newRotation = this._rotation + 1
-		console.log(`Attempting to rotate to ${newRotation} out of ${this.shape.cells.length}`)
 		this.rotation = newRotation
 	}
 
@@ -65,7 +64,6 @@ export class Block {
 					// If the targetCell is occupied by this block, it doesn't count.
 					const isSelf = targetCell?.block === this
 					if (!isSelf && targetCell.isOccupied()) {
-						console.log('Unable to rotate')
 						return
 					}
 				}
@@ -80,7 +78,7 @@ export class Block {
 		if (value >= this.shape.cells.length) {
 			value = 0
 		}
-		console.log('rotation', value, this.shape.cells.length)
+
 		this._rotation = value
 		this.cells = this.shape.cells[this.rotation]
 
@@ -122,7 +120,7 @@ export class Block {
 						if (destinationCell?.block === this) continue
 
 						// If the cell below isn't empty, we can't move there.
-						const destinationEmpty = thisCell.cellBelow() === 'empty'
+						const destinationEmpty = thisCell?.cellBelow() === 'empty'
 						if (!destinationEmpty) return false
 					}
 				}

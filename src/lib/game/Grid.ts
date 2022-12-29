@@ -4,8 +4,25 @@ import { Block } from './Block'
 import { Cell } from './Cell'
 
 export class Grid {
+	/** The dimensions of the grid in cells. */
 	dimensions: [x: number, y: number] = [10, 20]
+
+	/**
+	 * A 2D array of cells: cell[y][x]
+	 * ```yaml
+	 * [x0,y0] [x1,y0] [x2,y0] [x3,y0] [x4,y0] [x5,y0] [x6,y0] [x7,y0] [x8,y0] [x9,y0]
+	 * [x0,y1] [x1,y1] [x2,y1] [x3,y1] [x4,y1] [x5,y1] [x6,y1] [x7,y1] [x8,y1] [x9,y1]
+	 * [x0,y2] [x1,y2] [x2,y2] [x3,y2] [x4,y2] [x5,y2] [x6,y2] [x7,y2] [x8,y2] [x9,y2]
+	 * [x0,y3] [x1,y3] [x2,y3] [x3,y3] [x4,y3] [x5,y3] [x6,y3] [x7,y3] [x8,y3] [x9,y3]
+	 * ... etc
+	 * ```
+	 * @example
+	 *   // Get the cell at x=5, y=3
+	 *   grid.cells[3][5]
+	 */
 	cells: Cell[][]
+
+	/** The falling block controlled by the player. */
 	activeBlock?: Block
 
 	debug = false
@@ -77,24 +94,6 @@ export class Grid {
 		}
 	}
 
-	canMoveTo(x: number, y: number) {
-		if (this.activeBlock) {
-			const { cells } = this.activeBlock
-			for (let i = 0; i < cells.length; i++) {
-				for (let j = 0; j < cells[i].length; j++) {
-					const cell = cells[i][j]
-					if (cell === 1) {
-						const targetCell = this.cells[y + i][x + j]
-						if (targetCell.block) {
-							return false
-						}
-					}
-				}
-			}
-		}
-		return true
-	}
-
 	rotateBlock() {
 		this.activeBlock?.rotate()
 		this.game.update()
@@ -105,16 +104,14 @@ export class Grid {
 		if (!this.activeBlock) return
 
 		const loopGuard = 21
-		let y = this.activeBlock.y
 		while (this.activeBlock?.canMove('down')) {
-			y++
+			const y = this.activeBlock.y
+			this.moveBlock('down')
 			if (y > loopGuard) {
 				console.error('loopGuard triggered')
 				break
 			}
 		}
-		y--
-		this.activeBlock.y = y
 		this.game.update()
 	}
 
@@ -122,7 +119,70 @@ export class Grid {
 	freeze() {
 		if (this.activeBlock) {
 			this.activeBlock.falling = false
+			this.checkRows()
 			this.addBlock()
+		}
+	}
+
+	/**
+	 * Checks for full rows and removes them.
+	 * @todo - row animation
+	 */
+	checkRows() {
+		let removedRows = 0
+		// Move all cells above the removed rows down.
+		this.cells.forEach((row, y) => {
+			const rowIsFull = row.every((cell) => cell.isOccupied() && cell.block)
+			if (rowIsFull) {
+				removedRows += 1
+				for (let i = y; i > 0; i--) {
+					for (let j = 0; j < row.length - 1; j++) {
+						const cell = this.cells[i][j]
+						cell.unlink()
+
+						const cellAbove = this.cells[i - 1]?.[cell.x]
+						if (cellAbove?.isOccupied()) {
+							const block = cellAbove.block
+							if (!block) throw new Error('Block not found.  This should never happen.')
+							cellAbove.unlink()
+							cell.link(block)
+						}
+					}
+				}
+			}
+
+			this.game.score += removedRows
+		})
+
+		this.game.update()
+	}
+
+	/**
+	 * Moves all floating cells down.
+	 * @todo - this isn't being used yet.  Perhaps it could be part of a PowerUp system or something?
+	 */
+	gravity() {
+		let allSettled = true
+		// Move all cells above the removed rows down.
+		this.cells.forEach((row, y) => {
+			// if (y > rows.length) return
+			row.forEach((cell, x) => {
+				if (cell.block && cell.isOccupied()) {
+					console.log('cellBelow', cell.cellBelow())
+					if (cell.cellBelow() === 'empty') {
+						allSettled = false
+						const block = cell.block
+						if (!block) return
+						cell.unlink()
+						this.cells[y + 1][x].link(block)
+					}
+				}
+			})
+		})
+
+		if (!allSettled) {
+			this.game.update()
+			requestAnimationFrame(() => setTimeout(() => this.gravity(), 10))
 		}
 	}
 

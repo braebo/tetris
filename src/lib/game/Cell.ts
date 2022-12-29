@@ -36,8 +36,15 @@ export class Cell {
 		this.state = this.state === 0 ? 1 : 0
 	}
 
-	link(block: Block, x: number, y: number) {
+	link(block: Block, x?: number, y?: number) {
 		this.block = block
+
+		// If x and y are not provided, assume the cell is occupied.
+		if (typeof x === 'undefined' || typeof y === 'undefined') {
+			this.state = 1
+			return
+		}
+
 		const newState = block.cells[y][x]
 		// Make sure we don't overwrite a cell that's already occupied.
 		if (this.state === 1 && newState === 1) {

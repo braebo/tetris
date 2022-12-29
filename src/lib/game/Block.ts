@@ -69,10 +69,11 @@ export class Block {
 				if (testCells[y][x] === 0) continue
 
 				const testTargetCell = this.grid.getCell(this, x, y)
-				const occupiedBySelf = this === testTargetCell.block
+				const outOfBounds = typeof testTargetCell === 'undefined'
+				const occupiedBySelf = this === testTargetCell?.block
 
-				if (testTargetCell.isOccupied() && !occupiedBySelf) {
-					if (testTargetCell.isOccupied()) {
+				if ((testTargetCell?.isOccupied() && !occupiedBySelf) || outOfBounds) {
+					if (testTargetCell?.isOccupied()) {
 						const { x, y } = testTargetCell
 						console.log(`testTargetCell at [${x},${y}] is occupied: `, testTargetCell)
 					}

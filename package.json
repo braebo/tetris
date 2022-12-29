@@ -41,6 +41,7 @@
 		"fractils": "3.1.0",
 		"greset": "2.0.0",
 		"mdsvex": "0.10.6",
+		"nanoid": "^4.0.0",
 		"nanostores": "^0.7.1",
 		"postcss": "8.4.20",
 		"postcss-load-config": "4.0.1",

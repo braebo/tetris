@@ -1,16 +1,18 @@
-# [Frackit](https://github.com/fractalhq/frackit)
+# [bokit](https://github.com/fractalhq/bokit)
 
-Minimal Sveltekit Starter Template.
+An opinionated Sveltekit starter-template.
+
+demo · https://bokit.braebo.dev
 
 <br>
 
-### download
+### init
 
 ```bash
-npx degit fractalhq/frackit app
+npx degit fractalhq/bokit app
 ```
 
-### launch
+### run
 
 ```bash
 cd app
@@ -18,13 +20,13 @@ npm install
 npm run dev
 ```
 
-### cusomize
+### next steps
 
-- Generate static files with [realfavicongenerator](https://realfavicongenerator.net/) and drop the result into `/static` to replace content like icons / pwa metadata with your own.
+-   Generate static files with [realfavicongenerator](https://realfavicongenerator.net/) and drop the result into `/static` to replace content like icons / pwa metadata with your own.
 
-- Generate metatags [here](https://metatags.io/) and paste them into `/src/app.html` to replace the meta with your own.
+-   Generate metatags [here](https://metatags.io/) and paste them into `/src/app.html` to replace the meta with your own.
 
-### features
+### some features
 
 -   [Vercel](https://vercel.com)
 -   [Typescript](https://www.typescriptlang.org)
@@ -37,5 +39,5 @@ npm run dev
 -   [Dark Theme](https://github.com/fractalhq/#ThemeToggle)
 -   [Fractils](https://github.com/fractalhq/fractils)
 -   [Greset](https://github.com/ghostdevv/greset)
--   [Local](https://github.com/FractalHQ/frackit/tree/main/static/fonts) Font [Setup](https://github.com/FractalHQ/frackit/blob/main/src/styles/app.scss#L4-L24)
+-   [Local](https://github.com/FractalHQ/bokit/tree/main/static/fonts) Font [Setup](https://github.com/FractalHQ/bokit/blob/main/src/styles/app.scss#L4-L24)
 -   PWA / Service Worker
